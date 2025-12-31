@@ -1,0 +1,148 @@
+/* =========================================
+   1. OVERLAY & CONTAINER
+   ========================================= */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 2000; padding: 15px; backdrop-filter: blur(8px);
+}
+
+.modal-container {
+  background: #fffdf5; width: 100%; max-width: 1200px;
+  height: 92vh; border-radius: 20px; position: relative;
+  overflow: hidden; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  font-family: 'Segoe UI', system-ui, sans-serif; display: flex;
+}
+
+.close-btn-x {
+  position: absolute; top: 15px; right: 20px; background: #ff4d4d;
+  color: white; border: none; width: 34px; height: 34px;
+  border-radius: 50%; font-size: 1.4rem; cursor: pointer;
+  z-index: 1000; display: flex; align-items: center; justify-content: center;
+}
+
+/* =========================================
+   2. GRID LAYOUT
+   ========================================= */
+.modal-grid {
+  display: grid; 
+  grid-template-columns: 1.1fr 0.9fr 1.3fr;
+  width: 100%; height: 100%;
+}
+
+.modal-col-image {
+  background: #fff; padding: 30px; display: flex;
+  flex-direction: column; align-items: center;
+  border-right: 1px solid #eee; gap: 20px; overflow-y: auto;
+}
+
+.main-image-frame {
+  position: relative; width: 100%; height: 480px; border-radius: 12px;
+  overflow: hidden; background: #f4f4f4; flex-shrink: 0;
+}
+
+.main-image-frame img { width: 100%; height: 100%; object-fit: contain; }
+
+.slide-arrow {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  background: rgba(0, 71, 171, 0.6); color: white; border: none;
+  font-size: 1.5rem; padding: 15px 10px; cursor: pointer; z-index: 10;
+}
+.slide-arrow.prev { left: 0; border-radius: 0 5px 5px 0; }
+.slide-arrow.next { right: 0; border-radius: 5px 0 0 5px; }
+
+.thumbnails-row { display: flex; gap: 10px; flex-wrap: nowrap; overflow-x: auto; padding: 5px 0; }
+.thumb-box { width: 55px; height: 75px; border-radius: 6px; overflow: hidden; cursor: pointer; border: 2px solid transparent; opacity: 0.5; flex-shrink: 0; }
+.thumb-box.active-thumb { border-color: #0047ab; opacity: 1; transform: scale(1.05); }
+.thumb-box img { width: 100%; height: 100%; object-fit: cover; }
+
+.modal-col-stats { padding: 40px 30px; background: #fdfdfd; border-right: 1px solid #eee; overflow-y: auto; }
+.modal-col-stats h2 { font-size: 2.2rem; font-weight: 900; color: #0047ab; text-transform: uppercase; margin-bottom: 25px; border-bottom: 4px solid #0047ab; display: inline-block; }
+.stats-table { background: #f9f9f9; border-radius: 12px; padding: 10px; }
+.stat-row { display: flex; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid #eee; font-size: 0.95rem; }
+
+.model-about-box {
+  margin-bottom: 25px; background: #f0f7ff; padding: 15px;
+  border-radius: 10px; border-left: 4px solid #0047ab;
+}
+.model-about-box h3 { font-size: 1.1rem; font-weight: 800; color: #0047ab; margin-bottom: 8px; text-transform: uppercase; }
+.model-about-box p { font-size: 0.9rem; line-height: 1.5; color: #444; font-style: italic; }
+
+.modal-col-form { padding: 40px 30px; background: #fffdf5; display: flex; flex-direction: column; overflow-y: auto; }
+
+.checkbox-container-left {
+  display: flex; align-items: center; justify-content: flex-start;
+  gap: 12px; cursor: pointer; font-weight: 700; font-size: 1.1rem; width: 100%;
+}
+.checkbox-container-left input[type="checkbox"] { width: 20px; height: 20px; accent-color: #0047ab; margin: 0; }
+
+.shoot-card-alt { background: #f0f7ff; border: 1.5px solid #d0e4ff; border-radius: 12px; padding: 15px; margin-bottom: 15px; }
+
+.input-group-sub { margin-bottom: 12px; }
+.input-group-sub label { display: block; font-size: 0.75rem; font-weight: 800; color: #666; margin-bottom: 5px; }
+.input-group-sub select, .req-input-alt { width: 100%; padding: 10px; border: 1px solid #c0d8f0; border-radius: 8px; font-size: 0.9rem; }
+
+.datetime-row-alt { display: flex; flex-direction: row; gap: 10px; margin-bottom: 20px; }
+.dt-item { flex: 1; min-width: 0; }
+.dt-item label { display: block; font-weight: 700; font-size: 0.85rem; margin-bottom: 6px; color: #444; }
+.dt-item input { width: 100%; padding: 12px; border: 1.5px solid #ddd; border-radius: 10px; font-size: 0.85rem; }
+
+.action-btns-alt { display: flex; flex-direction: row; gap: 10px; }
+.btn-book-wa, .btn-book-ig {
+  flex: 1; padding: 15px 5px; border-radius: 10px; border: none; color: white;
+  font-weight: 800; background-color: #0047ab; cursor: pointer; font-size: 0.85rem;
+}
+
+/* =========================================
+   3. OVERLAYS & MOBILE RESPONSIVENESS
+   ========================================= */
+.copy-instruction-overlay {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.9); z-index: 1500;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 20px;
+}
+
+.instruction-card {
+  background: white; padding: 30px; border-radius: 20px;
+  text-align: center; max-width: 360px; width: 90%; color: #333;
+}
+
+.steps-box {
+  background: #f8f9fa; padding: 15px; border-radius: 12px;
+  text-align: left; margin: 15px 0; font-size: 0.95rem;
+  line-height: 1.6; border-left: 4px solid #0047ab;
+}
+
+.btn-continue {
+  background: #0047ab; color: white; border: none;
+  padding: 14px 25px; border-radius: 10px; font-weight: bold;
+  cursor: pointer; width: 100%; font-size: 1rem;
+}
+
+.btn-cancel-link {
+  background: none; border: none; color: #666; margin-top: 15px;
+  text-decoration: underline; cursor: pointer; font-size: 0.9rem;
+}
+
+@media (max-width: 1024px) {
+  .modal-container { height: 100vh; max-width: 100%; border-radius: 0; overflow-y: auto; }
+  .modal-grid { display: block; height: auto; }
+  .modal-col-image { display: flex; width: 100%; border-right: none; height: auto; border-bottom: 1px solid #eee; padding: 40px 20px 20px; }
+  .main-image-frame { height: 380px; margin-top: 10px; }
+  .modal-col-stats, .modal-col-form { height: auto; overflow: visible; border-right: none; padding: 30px 20px; }
+}
+
+@media (max-width: 480px) {
+  .modal-overlay { padding: 0; }
+  .main-image-frame { height: 300px; }
+  .datetime-row-alt, .action-btns-alt { flex-direction: row !important; display: flex !important; }
+  .btn-book-wa, .btn-book-ig { font-size: 0.75rem; }
+}
+
+.card-details-reveal { margin-top: 15px; padding-top: 15px; border-top: 1px solid #e0ebf5; animation: slideIn 0.3s ease; }
+@keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

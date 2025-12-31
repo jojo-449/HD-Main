@@ -1,0 +1,73 @@
+/* =========================================
+   1. GLOBAL VARIABLES & RESET
+   ========================================= */
+:root {
+  --primary-blue: #0047ab;
+  --dark-blue: #002f6c;
+  --light-blue: #e6efff;
+  --ivory-bg: #fffdf5;
+  --text-dark: #333333;
+  --text-gray: #666666;
+  --white: #ffffff;
+  --shadow-sm: 0 4px 6px rgba(0,0,0,0.05);
+  --shadow-md: 0 8px 20px rgba(0,0,0,0.08);
+  --radius: 12px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--ivory-bg);
+  color: var(--text-dark);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* --- LAYOUT FIX (Sticky Footer) --- */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Takes full screen height */
+}
+
+.content-wrap {
+  flex: 1; /* This pushes the footer to the bottom */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Page Container Utility */
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Button Utility */
+.btn-primary {
+  background-color: var(--primary-blue);
+  color: var(--white);
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--dark-blue);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 71, 171, 0.3);
+}

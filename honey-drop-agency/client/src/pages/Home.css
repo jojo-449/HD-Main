@@ -1,0 +1,250 @@
+/* =========================================
+   1. VARIABLES & CORE RESET
+   ========================================= */
+:root {
+  --primary-blue: #0047ab;
+  --dark-blue: #002f6c;
+  --ivory-bg: #fffdf5;
+  --white: #ffffff;
+  --text-dark: #333333;
+  --radius-lg: 15px;
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition: all 0.6s var(--ease-expo);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden; /* Fixes side-scrolling and screenshot issues */
+  background-color: var(--ivory-bg);
+  font-family: system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+/* Fix for Navbar width */
+nav {
+  width: 100% !important;
+  display: block;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+/* =========================================
+   2. HERO & CONTAINER
+   ========================================= */
+.home-hero { width: 100%; background: #000; line-height: 0; overflow: hidden; }
+.hero-video { width: 100%; height: auto; display: block; }
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* =========================================
+   3. CAROUSEL & CARDS
+   ========================================= */
+.section-wrapper {
+  margin: 4rem 0;
+  width: 100%;
+  animation: fadeInUp 1s var(--ease-expo) both;
+}
+
+.section-title {
+  color: var(--dark-blue);
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid var(--primary-blue);
+  padding-left: 12px;
+  text-transform: uppercase;
+}
+
+.carousel-track {
+  display: flex;
+  gap: 15px;
+  width: max-content;
+  animation: scrollLeft 35s linear infinite;
+}
+
+@keyframes scrollLeft {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.model-card {
+  width: 150px; 
+  flex-shrink: 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+  transition: var(--transition);
+}
+
+.model-card:hover { transform: translateY(-10px); }
+.card-img { width: 100%; height: 210px; object-fit: cover; display: block; }
+
+.group-card { width: 260px; flex-shrink: 0; border-radius: var(--radius-lg); overflow: hidden; }
+.group-img { width: 100%; height: 170px; object-fit: cover; display: block; }
+
+/* =========================================
+   4. ABOUT & STORY
+   ========================================= */
+.about-section { 
+  background: var(--white); 
+  padding: 4rem 2rem; 
+  border-radius: 20px; 
+  margin-top: 3rem; 
+  box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+}
+
+.about-header { text-align: center; margin-bottom: 2.5rem; }
+.about-main-title { font-size: 2.5rem; color: var(--primary-blue); text-transform: uppercase; }
+.about-narrative { text-align: center; max-width: 850px; margin: 0 auto 3rem; color: #555; }
+
+.quote-container { 
+  text-align: center; 
+  padding: 2.5rem; 
+  background: #f8faff; 
+  border-radius: 15px; 
+  margin: 3rem 0;
+}
+.quote-icon { font-size: 2rem; color: var(--primary-blue); opacity: 0.2; }
+.quote-container h3 { font-size: 1.6rem; color: var(--dark-blue); font-family: serif; font-style: italic; margin: 10px 0; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 3rem; }
+.stat-card { text-align: center; }
+.stat-icon { font-size: 1.8rem; color: var(--primary-blue); animation: float 4s ease-in-out infinite; margin-bottom: 10px; }
+.stat-card h4 { font-size: 1.8rem; color: var(--dark-blue); font-weight: 800; }
+.stat-card p { font-size: 0.7rem; text-transform: uppercase; color: #888; font-weight: bold; }
+
+.mission-box { text-align: center; max-width: 700px; margin: 4rem auto; }
+.section-sub-title { font-size: 1.8rem; color: var(--primary-blue); text-transform: uppercase; margin-bottom: 15px; }
+
+/* =========================================
+   5. WHAT WE OFFER (NEW IMAGE LOGIC)
+   ========================================= */
+.services-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+
+.service-card { 
+  background: #fdfdfd; 
+  padding: 2.5rem 1.5rem; 
+  border-radius: 15px; 
+  border: 1px solid #eee; 
+  text-align: center; 
+  transition: var(--transition); 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.service-card:hover { 
+  border-color: var(--primary-blue); 
+  transform: translateY(-8px); 
+  background: #f8faff; 
+}
+
+.offer-icon { font-size: 2rem; color: var(--primary-blue); margin-bottom: 15px; }
+
+/* The Service Image Container - "Added Length" */
+.service-img-box {
+  width: 100%;
+  height: 300px; /* Taller vertically to show image fully */
+  margin-top: 20px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #f0f0f0;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.service-img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Fills the vertical space elegantly */
+  display: block;
+  transition: transform 0.8s var(--ease-expo);
+}
+
+.service-card:hover .service-img-box img {
+  transform: scale(1.08); /* Sophisticated zoom on hover */
+}
+
+/* =========================================
+   6. SLIDESHOW (100% RESPONSIVE)
+   ========================================= */
+.slideshow-section {
+  position: relative;
+  width: 100%;
+  background: #000;
+  margin: 5rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70vh;
+  max-height: 650px;
+  overflow: hidden;
+}
+
+.slide-item {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transform: scale(1.05);
+  transition: opacity 1.2s ease-in-out, transform 1.2s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.slide-item.active { opacity: 1; z-index: 2; transform: scale(1); }
+.slide-media { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+
+.slideshow-dots {
+  position: absolute;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  z-index: 11;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 10px 20px;
+  border-radius: 50px;
+}
+
+.dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.3); border: none; cursor: pointer; }
+.dot.active { background: #fff; transform: scale(1.2); }
+
+/* =========================================
+   7. MOBILE RESPONSIVENESS
+   ========================================= */
+@media screen and (max-width: 480px) {
+  .container { padding: 0 15px; }
+  .section-title { font-size: 0.95rem; }
+  .about-main-title { font-size: 1.8rem; }
+  .stats-grid, .services-grid { grid-template-columns: 1fr; gap: 30px; }
+  
+  .model-card { width: 140px; }
+  .group-card { width: 230px; }
+  
+  .slideshow-section { height: auto; aspect-ratio: 4 / 5; max-height: 500px; }
+
+  /* Slightly shorter height for images on small mobile so they fit screens better */
+  .service-img-box {
+    height: 250px;
+  }
+}

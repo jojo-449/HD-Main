@@ -1,0 +1,132 @@
+/* Ivory & Blue Theme */
+.signup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* FIX: Changed from height: 100vh to min-height so Footer fits */
+    min-height: 80vh; 
+    padding: 40px 20px;
+    background-color: #FFFFF0; /* Primary Ivory */
+}
+
+.signup-box {
+    background-color: white;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    border-top: 5px solid #003366; /* Primary Blue */
+}
+
+.signup-box h2 {
+    color: #003366;
+    margin-bottom: 25px;
+    font-size: 1.8rem;
+}
+
+.signup-form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.signup-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #004080; /* Secondary Blue */
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* --- ICON STYLING --- */
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* Left Icon (User, Phone, Lock) */
+.input-icon {
+    position: absolute;
+    left: 12px;
+    color: #003366;
+    font-size: 1rem;
+    z-index: 10;
+}
+
+/* Right Toggle Icon (Eye) */
+.password-toggle-icon {
+    position: absolute;
+    right: 12px;
+    color: #666; /* Softer color for the eye */
+    cursor: pointer;
+    font-size: 1.1rem;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+}
+
+.password-toggle-icon:hover {
+    color: #003366;
+}
+
+/* Input Styling with Padding for Icons */
+.signup-form-group input {
+    width: 100%;
+    /* Top | Right (for Eye) | Bottom | Left (for User Icon) */
+    padding: 12px 40px 12px 40px; 
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+    background-color: #FDFDFD;
+}
+
+.signup-form-group input:focus {
+    outline: none;
+    border-color: #003366;
+    background-color: #fff;
+}
+
+.signup-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #003366;
+    color: #FFFFF0;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.signup-btn:hover {
+    background-color: #004080;
+}
+
+.signup-footer {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.signup-footer a {
+    color: #003366;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.signup-footer a:hover {
+    text-decoration: underline;
+}
+
+.error-msg {
+    color: #D8000C;
+    background-color: #FFD2D2;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}

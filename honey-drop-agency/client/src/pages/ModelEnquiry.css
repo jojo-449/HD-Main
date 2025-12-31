@@ -1,0 +1,358 @@
+/* =========================================
+   1. GLOBAL RESET & PAGE LAYOUT
+   ========================================= */
+* {
+  box-sizing: border-box;
+}
+
+.me-page-wrapper {
+  background-color: #f0f4f8; /* Softer, cooler grey */
+  min-height: 100vh;
+  padding: 60px 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+.me-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* =========================================
+   2. HEADER
+   ========================================= */
+.me-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.me-header h1 {
+  color: #0047ab;
+  font-size: 2.8rem;
+  font-weight: 800;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.me-header p {
+  color: #666;
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* =========================================
+   3. CONTENT LAYOUT (Grid)
+   ========================================= */
+.me-content-layout {
+  display: grid;
+  grid-template-columns: 2.5fr 1fr; /* Main form gets more space */
+  gap: 30px;
+  align-items: start; /* Essential for sticky sidebar */
+}
+
+/* =========================================
+   4. CARD STYLING
+   ========================================= */
+.me-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 47, 171, 0.08); /* Soft blue shadow */
+  padding: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.me-section-title {
+  color: #0047ab;
+  border-bottom: 2px solid #eef2f7;
+  padding-bottom: 15px;
+  margin-bottom: 30px;
+  font-size: 1.6rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* =========================================
+   5. FORM ELEMENTS
+   ========================================= */
+.me-form-block {
+  margin-bottom: 35px;
+}
+
+.me-form-block h4 {
+  color: #555;
+  margin-bottom: 18px;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  display: flex;
+  align-items: center;
+}
+
+.me-form-block h4::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background-color: #0047ab;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+/* --- Input Grids --- */
+.me-grid {
+  display: grid;
+  gap: 20px;
+}
+
+.me-grid-personal { 
+  grid-template-columns: repeat(2, 1fr); 
+}
+
+/* 4 columns on desktop, will adjust on mobile */
+.me-grid-measurements { 
+  grid-template-columns: repeat(4, 1fr); 
+}
+
+.me-grid-experience { 
+  grid-template-columns: repeat(2, 1fr); 
+}
+
+.me-input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.me-full-width {
+  grid-column: 1 / -1;
+}
+
+/* --- Labels & Inputs --- */
+label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+.req { 
+  color: #e63946; 
+  margin-left: 3px;
+}
+
+input, select, textarea {
+  padding: 14px 16px;
+  border: 1px solid #e0e6ed;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #333;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+input:hover, select:hover, textarea:hover {
+  border-color: #bcd4f5;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #0047ab;
+  background-color: #fff;
+  box-shadow: 0 0 0 4px rgba(0, 71, 171, 0.1); /* Glow effect */
+}
+
+textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* =========================================
+   6. FILE UPLOAD
+   ========================================= */
+.me-upload-container {
+  border: 2px dashed #cbdcf7;
+  border-radius: 12px;
+  background-color: #f8fbff;
+  text-align: center;
+  position: relative;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.me-upload-container:hover {
+  border-color: #0047ab;
+  background-color: #f0f7ff;
+}
+
+.upload-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.upload-icon {
+  font-size: 3.5rem;
+  color: #0047ab;
+  margin-bottom: 15px;
+  transition: transform 0.3s ease;
+}
+
+.me-upload-container:hover .upload-icon {
+  transform: translateY(-5px);
+}
+
+.upload-text {
+  font-weight: 600;
+  color: #555;
+}
+
+.upload-subtext {
+  font-size: 0.85rem;
+  color: #888;
+  margin-top: 5px;
+}
+
+.file-input {
+  display: none;
+}
+
+/* =========================================
+   7. SUBMIT BUTTON
+   ========================================= */
+.me-submit-btn {
+  background: linear-gradient(135deg, #002f6c 0%, #0047ab 100%);
+  color: white;
+  border: none;
+  padding: 18px 30px;
+  border-radius: 50px; /* Pill shape */
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 20px rgba(0, 71, 171, 0.2);
+  margin-top: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.me-submit-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(0, 71, 171, 0.3);
+}
+
+.me-submit-btn:disabled {
+  background: #cbd5e1;
+  transform: none;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* =========================================
+   8. SIDEBAR (Requirements)
+   ========================================= */
+.me-requirements-section {
+  position: sticky; /* Sticks while scrolling */
+  top: 30px;
+  background: #0047ab; /* Blue background for sidebar */
+  color: white;
+  border: none;
+}
+
+.me-requirements-section .me-section-title {
+  color: white;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.me-req-item {
+  margin-bottom: 25px;
+}
+
+.me-req-item h4 {
+  color: #fff;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  background: rgba(255,255,255,0.1);
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.me-req-item ul {
+  padding-left: 20px;
+  margin: 0;
+  color: rgba(255,255,255,0.9);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.me-req-item ul li {
+  margin-bottom: 8px;
+}
+
+/* =========================================
+   9. MOBILE RESPONSIVENESS
+   ========================================= */
+
+/* Tablet & Smaller Laptops (max-width: 1024px) */
+@media (max-width: 1024px) {
+  .me-content-layout {
+    grid-template-columns: 1fr; /* Stack sidebar below form */
+    gap: 40px;
+  }
+
+  .me-requirements-section {
+    position: static; /* Remove sticky on mobile */
+    order: -1; /* Move requirements to TOP on mobile (optional, remove if you want it at bottom) */
+  }
+}
+
+/* Mobile Devices (max-width: 600px) */
+@media (max-width: 600px) {
+  .me-page-wrapper {
+    padding: 30px 15px;
+  }
+
+  .me-header h1 {
+    font-size: 2rem;
+  }
+
+  .me-card {
+    padding: 25px 20px;
+  }
+
+  /* Personal Info: 1 column */
+  .me-grid-personal, 
+  .me-grid-experience {
+    grid-template-columns: 1fr; 
+  }
+
+  /* Measurements: Keep 2 columns (Numbers are short, saves scrolling) */
+  .me-grid-measurements {
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 15px;
+  }
+
+  /* Adjust inputs for touch */
+  input, select, textarea {
+    padding: 12px;
+    font-size: 16px; /* Prevents zoom on iPhone */
+  }
+
+  .me-section-title {
+    font-size: 1.3rem;
+  }
+}
