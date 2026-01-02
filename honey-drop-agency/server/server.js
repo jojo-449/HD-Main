@@ -24,7 +24,7 @@ const allowedOrigins = [
   "http://localhost:5174",               
   "https://honeydropempire.xyz",         
   "https://www.honeydropempire.xyz",     
-  "https://honeydropempire-2.onrender.com" // Add your Render URL here too
+  "https://hd-main-4.onrender.com" // Add your Render URL here too
 ];
 
 app.use(cors({
