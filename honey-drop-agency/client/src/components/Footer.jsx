@@ -102,13 +102,11 @@ const Footer = () => {
           
           {/* Developer Credit */}
           <div className="developer-credit">
-            <span>Developed by D Digital Guy</span>
+            <span>Developed by Leiestadesigns</span>
             
-            <a href="https://www.instagram.com" target="_blank" rel="noreferrer" aria-label="Developer Instagram" style={{ color: '#E1306C' }}>
-              <FaInstagram />
-            </a>
+          
 
-            <a href="https://wa.me/+2348036232204" target="_blank" rel="noreferrer" aria-label="Developer WhatsApp" style={{ color: '#25D366' }}>
+            <a href="https://wa.me/+2349018912194" target="_blank" rel="noreferrer" aria-label="Developer WhatsApp" style={{ color: '#25D366' }}>
               <FaWhatsapp />
             </a>
           </div>
