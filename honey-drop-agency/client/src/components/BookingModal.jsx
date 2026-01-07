@@ -138,7 +138,7 @@ const BookingModal = ({ model, onClose }) => {
                 <p>2. <b>Long-Press</b> in the message box.</p>
                 <p>3. Select <b>"Paste"</b> and send!</p>
               </div>
-              <button className="btn-continue" onClick={() => window.location.href = 'https://ig.me/m/_hdmodels'}>
+              <button className="btn-continue" onClick={() => window.location.href = 'https://www.instagram.com/_hdmodels?igsh=MTFzZjQxajh2MHE1Yw=='}>
                 Open Instagram & Paste
               </button>
               <button className="btn-cancel-link" onClick={() => setShowCopySuccess(false)}>
