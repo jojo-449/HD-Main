@@ -59,23 +59,34 @@ const BookingModal = ({ model, onClose }) => {
     let dbRequirements = "";
     selectedKeys.forEach(key => {
       const item = shootDetails[key];
-      const durationText = key === 'fashion' ? `   - Duration: ${item.duration}\n` : '';
+     const showDuration = key === 'fashion' || key === 'brand';
+      const durationText = showDuration ? `   - Duration: ${item.duration}\n` : '';
       plainMessage += `🎬 ${item.label}:\n${durationText}${item.specificReq ? `   - Note: ${item.specificReq}\n` : ''}\n`;
-      dbRequirements += `• ${item.label}${key === 'fashion' ? ` (${item.duration})` : ''}${item.specificReq ? `: ${item.specificReq}` : ''}\n`;
+      dbRequirements += `• ${item.label}${showDuration ? ` (${item.duration})` : ''}${item.specificReq ? `: ${item.specificReq}` : ''}\n`;
     });
     plainMessage += `\nClient: @${clientName}`;
     return { selectedKeys, plainMessage, dbRequirements, shootSummary: selectedKeys.map(k => shootDetails[k].label).join(', ') };
   };
 
-  // --- UPDATED INSTAGRAM LOGIC (NOW SAVES TO DATABASE) ---
   const handleInstagramBook = async () => {
     const { selectedKeys, plainMessage, dbRequirements, shootSummary } = generateBookingData();
     if (selectedKeys.length === 0 || !formData.date || !formData.time) return alert("Fill all details first.");
+
+    // COPY FIRST (This fixes the link-pasting issue)
+    try {
+      await navigator.clipboard.writeText(plainMessage);
+    } catch (err) {
+      // Fallback copy method
+      const textArea = document.createElement("textarea");
+      textArea.value = plainMessage;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+    }
     
     setLoading(true);
-
     try {
-      // 1. SAVE TO DATABASE
       if (user?.token) {
         await api.post('/api/bookings', { 
           modelName: model.name, 
@@ -85,16 +96,10 @@ const BookingModal = ({ model, onClose }) => {
           requirements: dbRequirements 
         }, { headers: { Authorization: `Bearer ${user.token}` } });
       }
-
-      // 2. COPY TO CLIPBOARD
-      await navigator.clipboard.writeText(plainMessage);
-      
       setLoading(false);
       setShowCopySuccess(true); 
     } catch (err) {
-      console.error('Instagram booking error:', err);
       setLoading(false);
-      // Fallback: If clipboard or DB fails, still show instructions so the flow continues
       setShowCopySuccess(true);
     }
   };
@@ -128,20 +133,20 @@ const BookingModal = ({ model, onClose }) => {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-container" onClick={e => e.stopPropagation()}>
         
-        {showCopySuccess && (
+       {showCopySuccess && (
           <div className="copy-instruction-overlay">
             <div className="instruction-card">
-              <h3>Details Copied!</h3>
-              <p>Your booking info is on your clipboard. To finish:</p>
+              <h3>✅ Details Copied!</h3>
+              <p>Your booking info is ready to paste.</p>
               <div className="steps-box">
-                <p>1. Click <b>"Open Instagram"</b> below.</p>
-                <p>2. <b>Long-Press</b> in the message box.</p>
+                <p>1. Click <b>"Open Instagram App"</b>.</p>
+                <p>2. <b>Long-Press</b> in the DM chat.</p>
                 <p>3. Select <b>"Paste"</b> and send!</p>
               </div>
               <button className="btn-continue" onClick={() => window.location.href = 'https://www.instagram.com/_hdmodels?igsh=MTFzZjQxajh2MHE1Yw=='}>
-                Open Instagram & Paste
+                Open Instagram App
               </button>
-              <button className="btn-cancel-link" onClick={() => setShowCopySuccess(false)}>
+              <button className="btn-cancel-link" style={{marginTop: '10px'}} onClick={() => setShowCopySuccess(false)}>
                 Go Back
               </button>
             </div>
@@ -206,7 +211,7 @@ const BookingModal = ({ model, onClose }) => {
                     {item.selected && (
                       <div className="card-details-reveal">
                         <div className="detail-divider"></div>
-                        {key === 'fashion' && (
+                        {key === 'fashion' || key === 'brand' && (
                           <div className="input-group-sub">
                             <label>DURATION:</label>
                             <select value={item.duration} onChange={(e) => handleDetailChange(key, 'duration', e.target.value)}>
