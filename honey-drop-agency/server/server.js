@@ -540,6 +540,28 @@ app.delete("/api/models/:id", async (req, res) => {
   }
 });
 
+
+// EDIT/UPDATE A MODEL
+app.put("/api/models/:id", upload.array("images", 4), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = { ...req.body };
+    
+    // If you uploaded new images, update them. If not, it keeps the old ones.
+    if (req.files && req.files.length > 0) {
+      updateData.images = req.files.map(file => file.path);
+    }
+
+    const updatedModel = await Model.findByIdAndUpdate(id, updateData, { new: true });
+    if (!updatedModel) return res.status(404).json({ message: "Model not found" });
+    
+    res.json({ success: true, model: updatedModel });
+  } catch (error) {
+    console.error("Update Error:", error);
+    res.status(500).json({ message: "Error updating model info" });
+  }
+});
+
 app.get('/', (req, res) => res.send('Honey Drop Backend is Live!'));
 
 const PORT = process.env.PORT || 5001; 
