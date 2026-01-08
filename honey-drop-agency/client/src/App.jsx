@@ -5,7 +5,8 @@ import AdminRoute from "./components/AdminRoute";
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import EditModel from "./pages/EditModel";
+import AddModel from "./pages/AddModel";
 import Footer from "./components/Footer";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -31,6 +32,8 @@ function App() {
             <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
             <Route path="/models" element={<ProtectedRoute><Models /></ProtectedRoute>} />
             <Route path="/booking-history" element={<ProtectedRoute><BookingHistory /></ProtectedRoute>} />
+            <Route path="/admin/add-model" element={<AdminRoute><AddModel /></AdminRoute>} />
+            <Route path="/admin/edit-model/:id" element={<AdminRoute><EditModel /></AdminRoute>} />
           
             <Route path="/model-enquiry" element={<ProtectedRoute><ModelEnquiry /></ProtectedRoute>} />
 

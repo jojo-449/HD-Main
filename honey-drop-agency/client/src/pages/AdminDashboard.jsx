@@ -117,11 +117,8 @@
 
 
 
-
-
-
-
 import { useEffect, useState, useContext, useCallback } from "react";
+import { useNavigate } from "react-router-dom"; // Added for navigation to Edit page
 import api from "../api";
 import Navbar from "../components/Navbar";
 import AuthContext from "../context/AuthContext";
@@ -130,48 +127,67 @@ import { toast } from "react-toastify";
 
 const AdminDashboard = () => {
   const { user, loading } = useContext(AuthContext);
+  const navigate = useNavigate();
+  
+  const [activeTab, setActiveTab] = useState("bookings"); // Toggle between 'bookings' and 'models'
   const [bookings, setBookings] = useState([]);
+  const [models, setModels] = useState([]);
   const [fetching, setFetching] = useState(true);
 
+  // --- FETCH BOOKINGS ---
   const fetchAllBookings = useCallback(async () => {
     if (!user?.token) return;
-    
     try {
       setFetching(true);
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
       const { data } = await api.get("/api/bookings/admin/all", config);
-      
-      // SORTING LOGIC: Newest first (New to Old)
       const sortedData = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       setBookings(sortedData);
-      
     } catch (error) {
-      console.error("Admin Fetch Error:", error);
       toast.error("Failed to load bookings");
     } finally {
       setFetching(false);
     }
   }, [user]);
 
-  useEffect(() => {
-    if (!loading) {
-      if (user && user.isAdmin) {
-        fetchAllBookings();
-      }
+  // --- FETCH MODELS ---
+  const fetchAllModels = useCallback(async () => {
+    try {
+      setFetching(true);
+      const { data } = await api.get("/api/models");
+      setModels(data);
+    } catch (error) {
+      toast.error("Failed to load models");
+    } finally {
+      setFetching(false);
     }
-  }, [user, loading, fetchAllBookings]);
+  }, []);
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Permanently delete this booking?")) {
+  useEffect(() => {
+    if (!loading && user?.isAdmin) {
+      if (activeTab === "bookings") fetchAllBookings();
+      if (activeTab === "models") fetchAllModels();
+    }
+  }, [user, loading, activeTab, fetchAllBookings, fetchAllModels]);
+
+  // --- DELETE ACTIONS ---
+  const handleDeleteBooking = async (id) => {
+    if (window.confirm("Delete this booking?")) {
       try {
-        const config = { headers: { Authorization: `Bearer ${user.token}` } };
-        await api.delete(`/api/bookings/${id}`, config);
-        toast.success("Booking deleted successfully!"); 
-        fetchAllBookings(); 
-      } catch (error) {
-        console.error("Delete Error:", error);
-        toast.error("Error: Could not delete booking.");
-      }
+        await api.delete(`/api/bookings/${id}`, { headers: { Authorization: `Bearer ${user.token}` } });
+        toast.success("Booking deleted");
+        fetchAllBookings();
+      } catch (error) { toast.error("Delete failed"); }
+    }
+  };
+
+  const handleDeleteModel = async (id) => {
+    if (window.confirm("Permanently remove this model from the website?")) {
+      try {
+        await api.delete(`/api/models/${id}`);
+        toast.success("Model removed");
+        fetchAllModels();
+      } catch (error) { toast.error("Delete failed"); }
     }
   };
 
@@ -181,15 +197,30 @@ const AdminDashboard = () => {
     <>
       <Navbar />
       <div className="container" style={{ marginTop: '2rem' }}>
-        <h2 className="history-title">Admin Management: All User Bookings</h2>
+        <h2 className="history-title">Admin Control Center</h2>
+
+        {/* Tab Switcher */}
+        <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', justifyContent: 'center' }}>
+          <button 
+            onClick={() => setActiveTab("bookings")} 
+            className={activeTab === "bookings" ? "login-btn" : "delete-btn"}
+            style={{ width: '200px', backgroundColor: activeTab === "bookings" ? '#000' : '#ccc' }}
+          >
+            Manage Bookings
+          </button>
+          <button 
+            onClick={() => setActiveTab("models")} 
+            className={activeTab === "models" ? "login-btn" : "delete-btn"}
+            style={{ width: '200px', backgroundColor: activeTab === "models" ? '#000' : '#ccc' }}
+          >
+            Manage Models
+          </button>
+        </div>
         
         {fetching ? (
-          <p className="loading-text">Loading History...</p>
-        ) : bookings.length === 0 ? (
-          <div className="no-history">
-            <h3>No bookings found.</h3>
-          </div>
-        ) : (
+          <p className="loading-text">Loading Data...</p>
+        ) : activeTab === "bookings" ? (
+          /* BOOKINGS TABLE */
           <div className="table-wrapper">
             <table>
               <thead>
@@ -197,32 +228,47 @@ const AdminDashboard = () => {
                   <th>Client</th>
                   <th>Model / Type</th>
                   <th>Schedule</th>
-                  <th>Requirements</th> {/* NEW COLUMN */}
+                  <th>Requirements</th>
                   <th>Action</th>
                 </tr>
               </thead>
               <tbody>
                 {bookings.map((b) => (
                   <tr key={b._id}>
+                    <td><strong>@{b.user?.instagramHandle?.replace('@', '')}</strong><br/><small>{b.user?.phoneNumber}</small></td>
+                    <td><div className="fw-bold">{b.modelName}</div><div style={{ fontSize: '0.8rem', color: '#0047ab' }}>{b.shootType}</div></td>
+                    <td>{b.date} <br/> <span style={{ fontSize: '0.85rem' }}>{b.time}</span></td>
+                    <td style={{ whiteSpace: 'pre-wrap', fontSize: '0.85rem' }}>{b.requirements || "None"}</td>
+                    <td><button onClick={() => handleDeleteBooking(b._id)} className="delete-btn">Delete</button></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          /* MODELS TABLE */
+          <div className="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Model Name</th>
+                  <th>Category</th>
+                  <th>Stats (H/B/W/H)</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {models.map((m) => (
+                  <tr key={m._id}>
+                    <td><strong>{m.name}</strong></td>
+                    <td><span className="category-badge">{m.category}</span></td>
+                    <td>{m.height} | {m.bust} | {m.waist} | {m.hips}</td>
                     <td>
-                      <strong>@{b.user?.instagramHandle?.replace('@', '') || 'Unknown'}</strong><br/>
-                      <small>{b.user?.phoneNumber || 'N/A'}</small>
-                    </td>
-                    <td>
-                      <div className="fw-bold">{b.modelName}</div>
-                      <div style={{ fontSize: '0.8rem', color: '#0047ab' }}>{b.shootType}</div>
-                    </td>
-                    <td>
-                      {b.date} <br/>
-                      <span style={{ fontSize: '0.85rem', color: '#666' }}>{b.time}</span>
-                    </td>
-                    {/* ADDED REQUIREMENTS CELL */}
-                    <td style={{ whiteSpace: 'pre-wrap', fontSize: '0.85rem', maxWidth: '250px' }}>
-                      {b.requirements || "No details provided"}
-                    </td>
-                    <td>
-                      <button onClick={() => handleDelete(b._id)} className="delete-btn">
-                        Delete
+                      <button onClick={() => navigate(`/admin/edit-model/${m._id}`)} className="edit-btn" style={{ marginRight: '5px', backgroundColor: '#0047ab', color: '#fff', border: 'none', padding: '5px 10px', cursor: 'pointer' }}>
+                        Edit
+                      </button>
+                      <button onClick={() => handleDeleteModel(m._id)} className="delete-btn">
+                        Remove
                       </button>
                     </td>
                   </tr>
