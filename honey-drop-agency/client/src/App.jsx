@@ -33,7 +33,7 @@ function App() {
             <Route path="/models" element={<ProtectedRoute><Models /></ProtectedRoute>} />
             <Route path="/booking-history" element={<ProtectedRoute><BookingHistory /></ProtectedRoute>} />
             <Route path="/admin/add-model" element={<AdminRoute><AddModel /></AdminRoute>} />
-            <Route path="/admin/edit-model/:id" element={<AdminRoute><EditModel /></AdminRoute>} />
+           <Route path="/admin/edit-model/:id" element={<AdminRoute><EditModel /></AdminRoute>} />
           
             <Route path="/model-enquiry" element={<ProtectedRoute><ModelEnquiry /></ProtectedRoute>} />
 

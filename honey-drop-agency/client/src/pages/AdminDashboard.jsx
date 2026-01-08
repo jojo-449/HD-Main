@@ -125,18 +125,16 @@ import { toast } from "react-toastify";
 const AdminDashboard = () => {
   const { user, loading } = useContext(AuthContext);
   const navigate = useNavigate();
-  
   const [activeTab, setActiveTab] = useState("bookings"); 
   const [models, setModels] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [fetching, setFetching] = useState(true);
 
-  const fetchAllData = useCallback(async () => {
+  const fetchData = useCallback(async () => {
     if (!user?.token) return;
     try {
       setFetching(true);
-      const config = { headers: { Authorization: `Bearer ${user.token}` } };
-      const resBookings = await api.get("/api/bookings/admin/all", config);
+      const resBookings = await api.get("/api/bookings/admin/all", { headers: { Authorization: `Bearer ${user.token}` } });
       const resModels = await api.get("/api/models");
       setBookings(resBookings.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
       setModels(resModels.data);
@@ -147,57 +145,53 @@ const AdminDashboard = () => {
     }
   }, [user]);
 
-  useEffect(() => {
-    if (!loading && user?.isAdmin) {
-      fetchAllData();
-    }
-  }, [user, loading, fetchAllData]);
+  useEffect(() => { if (!loading && user?.isAdmin) fetchData(); }, [user, loading, fetchData]);
 
-  const handleDeleteModel = async (id) => {
-    if (window.confirm("Permanently remove this model?")) {
-      try {
-        await api.delete(`/api/models/${id}`);
-        toast.success("Model Deleted");
-        fetchAllData();
-      } catch (err) { toast.error("Delete failed"); }
+  // --- ONE-TIME SYNC TOOL ---
+  const handleSync = async () => {
+    if (!window.confirm("This will move your Coded Models (Fehilah, Rolex, etc.) into the database so you can edit them. Continue?")) return;
+    
+    // This is the list of models currently "stuck" in your code
+    const codedModels = [
+      { name: "Fehilah", category: "top", height: "5'3\"", size: "UK 6/8", bust: "32\"", waist: "26\"", hips: "39\"", shoe: "39/40", hair: "Ginger", eyes: "Dark Brown", about: "Top-tier model...", images: ["https://via.placeholder.com/400x600?text=Fehilah"] },
+      { name: "Rolex", category: "top", height: "5'6\"", size: "12", bust: "40\"", waist: "33\"", hips: "42\"", shoe: "39", hair: "Black", eyes: "Brown", about: "Student and entrepreneur...", images: ["https://via.placeholder.com/400x600?text=Rolex"] },
+      { name: "Jessica oba", category: "elite", height: "5'11\"", size: "14", bust: "36\"", waist: "28\"", hips: "40\"", shoe: "40", hair: "Black", eyes: "Brown", about: "Exclusive elite talent...", images: ["https://via.placeholder.com/400x600?text=Jessica"] },
+      // Add any other names here you want to sync
+    ];
+
+    try {
+      for (let m of codedModels) {
+        await api.post("/api/models", m, { headers: { Authorization: `Bearer ${user.token}` } });
+      }
+      toast.success("Sync Complete! All models are now editable.");
+      fetchData();
+    } catch (err) { toast.error("Sync failed or models already exist."); }
+  };
+
+  const deleteModel = async (id) => {
+    if (window.confirm("Delete permanently?")) {
+      await api.delete(`/api/models/${id}`);
+      fetchData();
     }
   };
 
-  // --- HELPER FUNCTION TO RENDER CATEGORY TABLES ---
-  const renderCategoryTable = (categoryKey, title) => {
-    const filteredModels = models.filter(m => m.category === categoryKey);
-    
-    if (filteredModels.length === 0) return null; // Don't show the category if it's empty
-
+  const renderTable = (cat, title) => {
+    const list = models.filter(m => m.category === cat);
+    if (list.length === 0) return null;
     return (
-      <div className="category-section" style={{ marginBottom: '40px' }}>
-        <h3 style={{ color: '#0047ab', borderBottom: '2px solid #0047ab', paddingBottom: '5px', marginBottom: '15px' }}>
-            {title} ({filteredModels.length})
-        </h3>
+      <div style={{ marginBottom: '30px' }}>
+        <h3 style={{ color: '#0047ab', borderBottom: '2px solid #0047ab' }}>{title}</h3>
         <div className="table-wrapper">
           <table>
-            <thead>
-              <tr>
-                <th>Model Name</th>
-                <th>Stats</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
+            <thead><tr><th>Name</th><th>Stats</th><th>Action</th></tr></thead>
             <tbody>
-              {filteredModels.map((m) => (
+              {list.map(m => (
                 <tr key={m._id}>
                   <td><strong>{m.name}</strong></td>
-                  <td>{m.height} | {m.waist} | {m.hips}</td>
+                  <td>{m.height} | {m.waist}</td>
                   <td>
-                    <button 
-                      onClick={() => navigate(`/admin/edit-model/${m._id}`)} 
-                      style={{ backgroundColor: '#0047ab', color: '#fff', border: 'none', padding: '6px 15px', borderRadius: '4px', cursor: 'pointer', marginRight: '10px' }}
-                    >
-                      Edit Info
-                    </button>
-                    <button onClick={() => handleDeleteModel(m._id)} className="delete-btn">
-                      Remove
-                    </button>
+                    <button onClick={() => navigate(`/admin/edit-model/${m._id}`)} className="edit-btn" style={{backgroundColor: '#0047ab', color:'#fff', border:'none', padding:'5px 10px', marginRight:'10px', borderRadius:'4px'}}>Edit</button>
+                    <button onClick={() => deleteModel(m._id)} className="delete-btn">Remove</button>
                   </td>
                 </tr>
               ))}
@@ -208,55 +202,31 @@ const AdminDashboard = () => {
     );
   };
 
-  if (loading) return <div>Loading...</div>;
-
   return (
     <>
       <Navbar />
       <div className="container" style={{ marginTop: '2rem' }}>
-        <h2 className="history-title">Admin Management</h2>
-
-        <div style={{ display: 'flex', gap: '30px', margin: '20px 0', borderBottom: '1px solid #ddd' }}>
-            <button onClick={() => setActiveTab("bookings")} style={{ padding: '10px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '1.1rem', fontWeight: 'bold', color: activeTab === 'bookings' ? '#0047ab' : '#888', borderBottom: activeTab === 'bookings' ? '3px solid #0047ab' : 'none' }}>Manage Bookings</button>
-            <button onClick={() => setActiveTab("models")} style={{ padding: '10px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '1.1rem', fontWeight: 'bold', color: activeTab === 'models' ? '#0047ab' : '#888', borderBottom: activeTab === 'models' ? '3px solid #0047ab' : 'none' }}>Manage Models</button>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <h2 className="history-title">Admin Management</h2>
+          <button onClick={handleSync} style={{ backgroundColor: '#28a745', color: '#fff', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer' }}>
+            Sync Coded Models to Database
+          </button>
         </div>
 
-        {fetching ? (
-          <p>Loading...</p>
-        ) : activeTab === "models" ? (
+        <div style={{ display: 'flex', gap: '20px', margin: '20px 0' }}>
+            <button onClick={() => setActiveTab("bookings")} style={{ fontWeight: 'bold', borderBottom: activeTab === 'bookings' ? '3px solid #0047ab' : 'none', background:'none', border:'none', cursor:'pointer' }}>Bookings</button>
+            <button onClick={() => setActiveTab("models")} style={{ fontWeight: 'bold', borderBottom: activeTab === 'models' ? '3px solid #0047ab' : 'none', background:'none', border:'none', cursor:'pointer' }}>Manage Models</button>
+        </div>
+
+        {activeTab === "models" ? (
           <div>
-            {/* HERE ARE THE CATEGORIES SORTED */}
-            {renderCategoryTable("basic", "BASIC MODELS")}
-            {renderCategoryTable("top", "TOP MODELS")}
-            {renderCategoryTable("premium", "PREMIUM MODELS")}
-            {renderCategoryTable("elite", "ELITE MODELS")}
-            
-            {models.length === 0 && <p>No models in database yet.</p>}
+            {renderTable("basic", "BASIC MODELS")}
+            {renderTable("top", "TOP MODELS")}
+            {renderTable("premium", "PREMIUM MODELS")}
+            {renderTable("elite", "ELITE MODELS")}
           </div>
         ) : (
-          /* Bookings Table */
-          <div className="table-wrapper">
-             <table>
-              <thead>
-                <tr>
-                  <th>Client</th>
-                  <th>Model</th>
-                  <th>Requirements</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {bookings.map((b) => (
-                  <tr key={b._id}>
-                    <td>@{b.user?.instagramHandle}</td>
-                    <td>{b.modelName}</td>
-                    <td style={{fontSize: '0.8rem'}}>{b.requirements}</td>
-                    <td><button onClick={() => handleDeleteBooking(b._id)} className="delete-btn">Delete</button></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <p>Manage Bookings here...</p>
         )}
       </div>
     </>
