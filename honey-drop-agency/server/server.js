@@ -409,7 +409,6 @@
 
 // export default AddModel;
 
-
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
@@ -488,14 +487,11 @@ app.use('/api/auth', authRoutes);
 app.use('/api/bookings', bookingRoutes); 
 app.use('/api/application', applicationRoutes);
 
-// FIXED: Added a check for req.files to prevent 'map' crash
+// 1. ADD NEW MODEL (POST)
 app.post("/api/models", upload.array("images", 4), async (req, res) => {
   try {
-    if (!req.files || req.files.length === 0) {
-        return res.status(400).json({ message: "No images were uploaded" });
-    }
-
-    const imageUrls = req.files.map(file => file.path); 
+    // If no files are uploaded, we check if they are being sent as text (for syncing)
+    const imageUrls = req.files ? req.files.map(file => file.path) : (req.body.images || []);
     
     const newModel = new Model({
       ...req.body,
@@ -510,7 +506,7 @@ app.post("/api/models", upload.array("images", 4), async (req, res) => {
   }
 });
 
-// GET MODELS BY CATEGORY
+// 2. GET MODELS BY CATEGORY
 app.get("/api/models/category/:cat", async (req, res) => {
   try {
     const models = await Model.find({ category: req.params.cat });
@@ -520,7 +516,7 @@ app.get("/api/models/category/:cat", async (req, res) => {
   }
 });
 
-// GET ALL MODELS
+// 3. GET ALL MODELS (For Admin Dashboard)
 app.get("/api/models", async (req, res) => {
   try {
     const models = await Model.find().sort({ createdAt: -1 });
@@ -530,35 +526,49 @@ app.get("/api/models", async (req, res) => {
   }
 });
 
-// DELETE MODEL
+// 4. GET A SINGLE MODEL BY ID (FIXES THE 404 ERROR)
+app.get("/api/models/:id", async (req, res) => {
+  try {
+    const model = await Model.findById(req.params.id);
+    if (!model) return res.status(404).json({ message: "Model not found" });
+    res.json(model);
+  } catch (error) {
+    console.error("Fetch Single Model Error:", error);
+    res.status(500).json({ message: "Invalid ID format or Server Error" });
+  }
+});
+
+// 5. EDIT/UPDATE A MODEL (PUT)
+app.put("/api/models/:id", upload.array("images", 4), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = { ...req.body };
+
+    // If new images are uploaded, replace the old ones
+    if (req.files && req.files.length > 0) {
+      updateData.images = req.files.map(file => file.path);
+    }
+
+    const updatedModel = await Model.findByIdAndUpdate(id, updateData, { new: true });
+    
+    if (!updatedModel) {
+      return res.status(404).json({ message: "Model not found in database" });
+    }
+    
+    res.json({ success: true, model: updatedModel });
+  } catch (error) {
+    console.error("Update Error:", error);
+    res.status(500).json({ message: "Server error: Could not update model" });
+  }
+});
+
+// 6. DELETE MODEL
 app.delete("/api/models/:id", async (req, res) => {
   try {
     await Model.findByIdAndDelete(req.params.id);
     res.json({ message: "Model deleted" });
   } catch (error) {
     res.status(500).json({ message: "Error deleting model" });
-  }
-});
-
-
-// EDIT/UPDATE A MODEL
-app.put("/api/models/:id", upload.array("images", 4), async (req, res) => {
-  try {
-    const { id } = req.params;
-    const updateData = { ...req.body };
-    
-    // If you uploaded new images, update them. If not, it keeps the old ones.
-    if (req.files && req.files.length > 0) {
-      updateData.images = req.files.map(file => file.path);
-    }
-
-    const updatedModel = await Model.findByIdAndUpdate(id, updateData, { new: true });
-    if (!updatedModel) return res.status(404).json({ message: "Model not found" });
-    
-    res.json({ success: true, model: updatedModel });
-  } catch (error) {
-    console.error("Update Error:", error);
-    res.status(500).json({ message: "Error updating model info" });
   }
 });
 
