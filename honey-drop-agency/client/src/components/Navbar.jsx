@@ -34,12 +34,12 @@ const Navbar = () => {
           <Link to="/models" className="nav-link" onClick={closeMenu}>Models</Link>
           <Link to="/booking-history" className="nav-link" onClick={closeMenu}>Bookings</Link>
           
-          {/* 2. ADMIN ONLY LINK: This only appears if the user is an Admin */}
-          {user && user.isAdmin && (
-            <Link to="/admin" className="nav-link admin-link-special" onClick={closeMenu}>
-              Admin History
-            </Link>
-          )}
+        {user && user.isAdmin && (
+  <> 
+    <Link to="/admin">Admin History</Link>
+    <Link to="/admin/add-model">+ Add Model</Link>
+  </> 
+)}
 
           <Link to="/model-enquiry" className="nav-link" onClick={closeMenu}>Join Us</Link>
           

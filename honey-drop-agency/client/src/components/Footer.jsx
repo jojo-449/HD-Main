@@ -45,7 +45,7 @@ const Footer = () => {
             <h3>Quick Links</h3>
             <ul className="footer-links">
               <li><Link to="/">Home</Link></li>
-              <li><Link to="/terms">Terms & Conditions</Link></li>
+              {/* <li><Link to="/terms">Terms & Conditions</Link></li> */}
               <li><Link to="/booking-history">Bookings</Link></li>
               <li><Link to="/models">Browse Models</Link></li>                    
               <li><Link to="/model-enquiry">Model Enquiry</Link></li>

@@ -211,15 +211,16 @@ const BookingModal = ({ model, onClose }) => {
                     {item.selected && (
                       <div className="card-details-reveal">
                         <div className="detail-divider"></div>
-                        {key === 'fashion' || key === 'brand' && (
-                          <div className="input-group-sub">
-                            <label>DURATION:</label>
-                            <select value={item.duration} onChange={(e) => handleDetailChange(key, 'duration', e.target.value)}>
-                              <option value="5 Hours">5 Hours</option>
-                              <option value="Full-Day (9am-5pm)">Full-Day (9am-5pm)</option>
-                            </select>
-                          </div>
-                        )}
+                       {/* Change 'key === fashion' to this: */}
+{(key === 'fashion' || key === 'brand') && (
+  <div className="input-group-sub">
+    <label>DURATION:</label>
+    <select value={item.duration} onChange={(e) => handleDetailChange(key, 'duration', e.target.value)}>
+      <option value="5 Hours">5 Hours</option>
+      <option value="Full-Day (9am-5pm)">Full-Day (9am-5pm)</option>
+    </select>
+  </div>
+)}
                         <input type="text" placeholder="Reqs..." value={item.specificReq} onChange={(e) => handleDetailChange(key, 'specificReq', e.target.value)} className="req-input-alt" />
                       </div>
                     )}

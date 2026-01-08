@@ -12,7 +12,7 @@ import Signup from "./pages/Signup";
 import Home from "./pages/Home";
 import Models from "./pages/Models";
 import BookingHistory from "./pages/BookingHistory";
-import Terms from "./pages/Terms";
+// import Terms from "./pages/Terms";
 import ModelEnquiry from "./pages/ModelEnquiry";
 import AdminDashboard from "./pages/AdminDashboard";
 
@@ -31,7 +31,7 @@ function App() {
             <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
             <Route path="/models" element={<ProtectedRoute><Models /></ProtectedRoute>} />
             <Route path="/booking-history" element={<ProtectedRoute><BookingHistory /></ProtectedRoute>} />
-            <Route path="/terms" element={<ProtectedRoute><Terms /></ProtectedRoute>} />
+          
             <Route path="/model-enquiry" element={<ProtectedRoute><ModelEnquiry /></ProtectedRoute>} />
 
             {/* Admin ONLY Protected Route */}
