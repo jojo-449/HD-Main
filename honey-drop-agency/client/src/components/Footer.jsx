@@ -102,7 +102,7 @@ const Footer = () => {
           
           {/* Developer Credit */}
           <div className="developer-credit">
-            <span>Developed by keiestadesigns</span>
+            <span>Developed by Leiestadesigns</span>
             
           
 
