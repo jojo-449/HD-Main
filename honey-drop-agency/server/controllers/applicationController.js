@@ -263,7 +263,7 @@ const submitApplication = async (req, res) => {
     // --- 3. SEND EMAIL TO ADMIN ---
     await resend.emails.send({
       from: 'Honey Drop Applications <info.honeydropempire.xyz>',
-      to: 'hello.hdmodels@gmail.com', 
+      to: 'bhadiejojo.11@gmail.com', 
       subject: `Application #${newApplication._id.toString().slice(-6)}: ${fullName}`, 
       html: `
         <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto;">
