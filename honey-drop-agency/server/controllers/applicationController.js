@@ -266,24 +266,68 @@ const submitApplication = async (req, res) => {
     // --- 3. SEND EMAIL TO ADMIN ---
     // NOTE: Change 'info@honeydropempire.xyz' to 'onboarding@resend.dev' 
     // if your domain is not yet verified in Resend.
-    await resend.emails.send({
-      from: 'Honey Drop Applications <info@honeydropempire.xyz>', // FIXED: added @
+    // await resend.emails.send({
+    //   from: 'Honey Drop Applications <info@honeydropempire.xyz>', // FIXED: added @
+    //   to: 'bhadiejojo.11@gmail.com', 
+    //   subject: `Application #${newApplication._id.toString().slice(-6)}: ${fullName}`, 
+    //   html: `
+    //     <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto;">
+    //       <h2 style="color: #0047ab; border-bottom: 2px solid #0047ab;">Model Application Details</h2>
+    //       <p><strong>Applicant:</strong> ${fullName}</p>
+    //       <p><strong>Email:</strong> ${email}</p>
+    //       <p><strong>WhatsApp:</strong> ${whatsappNumber}</p>
+    //       <p><strong>Instagram:</strong> @${cleanIgHandle}</p>
+    //       <p><strong>Location:</strong> ${location} (Age: ${age})</p>
+    //       <hr/>
+    //       <p><strong>Full details saved in Database.</strong></p>
+    //     </div>
+    //   `,
+    //   attachments: attachments
+    // });
+
+const submitApplication = async (req, res) => {
+  try {
+    const { fullName, email } = req.body; // ... (keep all your other variables)
+
+    // 1. Save to DB
+    const newApplication = await Application.create({ ...req.body });
+
+    // 2. Prepare Attachments
+    const attachments = req.files ? req.files.map((file) => ({
+      filename: file.originalname,
+      content: file.buffer,
+    })) : [];
+
+    // --- 3. SEND THE EMAIL AND CAPTURE THE RESPONSE ---
+    const { data, error } = await resend.emails.send({
+      // IF DOMAIN IS NOT GREEN IN RESEND, USE 'onboarding@resend.dev'
+      from: 'Honey Drop Applications <info@honeydropempire.xyz>', 
       to: 'bhadiejojo.11@gmail.com', 
-      subject: `Application #${newApplication._id.toString().slice(-6)}: ${fullName}`, 
-      html: `
-        <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #0047ab; border-bottom: 2px solid #0047ab;">Model Application Details</h2>
-          <p><strong>Applicant:</strong> ${fullName}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>WhatsApp:</strong> ${whatsappNumber}</p>
-          <p><strong>Instagram:</strong> @${cleanIgHandle}</p>
-          <p><strong>Location:</strong> ${location} (Age: ${age})</p>
-          <hr/>
-          <p><strong>Full details saved in Database.</strong></p>
-        </div>
-      `,
+      subject: `New Application: ${fullName}`, 
+      html: `<h1>New Application</h1><p>Applicant: ${fullName}</p>`,
       attachments: attachments
     });
+
+    if (error) {
+      // THIS WILL SHOW US THE EXACT PROBLEM IN RENDER LOGS
+      console.error("❌ RESEND ERROR:", error);
+      return res.status(400).json({ success: false, message: "Email Error: " + error.message });
+    }
+
+    console.log("✅ RESEND SUCCESS! Email ID:", data.id);
+    res.status(201).json({ success: true, message: 'Application Submitted Successfully' });
+
+  } catch (error) {
+    console.error("🔥 SERVER CRASH ERROR:", error);
+    res.status(500).json({ success: false, message: "Internal Error" });
+  }
+};
+
+
+
+
+
+
 
     // --- 4. SEND CONFIRMATION TO APPLICANT ---
     await resend.emails.send({
