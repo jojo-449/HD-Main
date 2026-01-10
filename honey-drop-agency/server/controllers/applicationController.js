@@ -263,7 +263,7 @@ const submitApplication = async (req, res) => {
     // --- 3. SEND EMAIL TO ADMIN ---
     await resend.emails.send({
       from: 'Honey Drop Applications <info.honeydropempire.xyz>',
-      to: 'Hello.hdmodels@gmail.com', 
+      to: 'hello.hdmodels@gmail.com', 
       subject: `Application #${newApplication._id.toString().slice(-6)}: ${fullName}`, 
       html: `
         <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto;">
@@ -326,7 +326,7 @@ const submitApplication = async (req, res) => {
 
     // --- 4. SEND CONFIRMATION TO APPLICANT ---
     await resend.emails.send({
-      from: 'Honey Drop Models <onboarding@resend.dev>',
+      from: 'Honey Drop Models <info.honeydropempire.xyz>',
       to: email, 
       subject: 'Application Received - Honey Drop Empire',
       html: `
