@@ -222,6 +222,9 @@
 // module.exports = { submitApplication };
 
 
+
+
+
 const { Resend } = require('resend');
 const Application = require('../models/Application'); 
 
@@ -252,73 +255,31 @@ const submitApplication = async (req, res) => {
     });
 
     // --- 2. PREPARE ATTACHMENTS ---
+    // Note: If photos are very large (over 10MB total), the email might be blocked.
     const attachments = req.files ? req.files.map((file) => ({
       filename: file.originalname,
       content: file.buffer,
     })) : [];
 
-    // Clean up Instagram handle (remove @ if present) for the link
     const cleanIgHandle = instagramHandle ? instagramHandle.replace('@', '') : '';
 
     // --- 3. SEND EMAIL TO ADMIN ---
+    // NOTE: Change 'info@honeydropempire.xyz' to 'onboarding@resend.dev' 
+    // if your domain is not yet verified in Resend.
     await resend.emails.send({
-      from: 'Honey Drop Applications <info.honeydropempire.xyz>',
+      from: 'Honey Drop Applications <info@honeydropempire.xyz>', // FIXED: added @
       to: 'bhadiejojo.11@gmail.com', 
       subject: `Application #${newApplication._id.toString().slice(-6)}: ${fullName}`, 
       html: `
         <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #0047ab; border-bottom: 2px solid #0047ab;">Model Application Details</h2>
-          
-          <h3 style="background-color: #f4f4f4; padding: 10px;">👤 Personal Information</h3>
           <p><strong>Applicant:</strong> ${fullName}</p>
-          <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
-          <p><strong>WhatsApp:</strong> <a href="https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}">${whatsappNumber}</a></p>
-          
-          <!-- FIXED: Instagram Link points to Instagram -->
-          <p><strong>Instagram:</strong> <a href="https://instagram.com/${cleanIgHandle}">${instagramHandle}</a></p>
-          
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>WhatsApp:</strong> ${whatsappNumber}</p>
+          <p><strong>Instagram:</strong> @${cleanIgHandle}</p>
           <p><strong>Location:</strong> ${location} (Age: ${age})</p>
-
-          <h3 style="background-color: #f4f4f4; padding: 10px; margin-top: 20px;">📏 Measurements</h3>
-          <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-            <tr>
-              <td style="padding: 5px; border-bottom: 1px solid #eee;"><strong>Height:</strong> ${height}</td>
-              <td style="padding: 5px; border-bottom: 1px solid #eee;"><strong>Dress:</strong> ${dressSize}</td>
-            </tr>
-            <tr>
-              <td style="padding: 5px; border-bottom: 1px solid #eee;"><strong>Bust:</strong> ${bust}</td>
-              <td style="padding: 5px; border-bottom: 1px solid #eee;"><strong>Waist:</strong> ${waist}</td>
-            </tr>
-            <tr>
-              <td style="padding: 5px; border-bottom: 1px solid #eee;"><strong>Hips:</strong> ${hips}</td>
-              <td style="padding: 5px; border-bottom: 1px solid #eee;"><strong>Shoe:</strong> ${shoeSize}</td>
-            </tr>
-            <tr>
-              <td style="padding: 5px; border-bottom: 1px solid #eee;"><strong>Hair:</strong> ${hairColor}</td>
-              <td style="padding: 5px; border-bottom: 1px solid #eee;"><strong>Eyes:</strong> ${eyeColor}</td>
-            </tr>
-          </table>
-
-          <h3 style="background-color: #f4f4f4; padding: 10px; margin-top: 20px;">🌟 Experience & Portfolio</h3>
-          <p><strong>Level:</strong> ${experience}</p>
-          
-          <!-- FIXED: Portfolio Link is now explicitly shown here -->
-          <div style="background: #eef; padding: 10px; border-left: 4px solid #0047ab; margin: 10px 0;">
-             <strong>🔗 Portfolio Link:</strong><br/>
-             <a href="${portfolioLink}">${portfolioLink || 'Not provided'}</a>
-          </div>
-
-          <p><strong>Previous Work:</strong><br/>${previousWork || 'None provided'}</p>
-
-          <h3 style="background-color: #f4f4f4; padding: 10px; margin-top: 20px;">ℹ️ Additional Info</h3>
-          <p><strong>Motivation:</strong><br/>${motivation}</p>
-          <p><strong>Availability:</strong> ${availability}</p>
-
-          <br />
-          <p style="font-size: 12px; color: #888;">
-            Sent from Honey Drop Empire Website.<br/>
-            Files are attached to this email.
-          </p>
+          <hr/>
+          <p><strong>Full details saved in Database.</strong></p>
         </div>
       `,
       attachments: attachments
@@ -326,17 +287,14 @@ const submitApplication = async (req, res) => {
 
     // --- 4. SEND CONFIRMATION TO APPLICANT ---
     await resend.emails.send({
-      from: 'Honey Drop Models <info.honeydropempire.xyz>',
+      from: 'Honey Drop Models <info@honeydropempire.xyz>', // FIXED: added @
       to: email, 
       subject: 'Application Received - Honey Drop Empire',
       html: `
         <div style="font-family: Arial, sans-serif; color: #333;">
-          <h2 style="color: #0047ab;">Hello ${fullName},</h2>
-          <p>Thank you for applying to join <strong>Honey Drop Modelling Agency</strong>.</p>
+          <h2>Hello ${fullName},</h2>
           <p>We have successfully received your application. Our team will review your profile shortly.</p>
-          <br/>
-          <p>Best Regards,</p>
-          <p><strong>The Honey Drop Team</strong></p>
+          <p>Best Regards,<br/><strong>The Honey Drop Team</strong></p>
         </div>
       `
     });
