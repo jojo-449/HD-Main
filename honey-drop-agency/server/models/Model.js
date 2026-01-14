@@ -45,46 +45,50 @@
 
 // module.exports = mongoose.model('Model', modelSchema);
 
+// const mongoose = require('mongoose');
+
+// const modelSchema = new mongoose.Schema({
+//   name: { type: String, required: true },
+
+//   category: { 
+//     type: String, 
+//     enum: ['Premium', 'Basic', 'Top', 'Elite'],
+//     required: true
+//   },
+
+//   height: { type: String },
+//   measurements: { type: String },
+
+//   images: {
+//     type: [String],
+//     default: []
+//   },
+
+//   bookingInfo: {
+//     type: String,
+//     default: "Contact via WhatsApp for rates."
+//   }
+
+// }, { timestamps: true });
+
+// module.exports = mongoose.model('Model', modelSchema);
+
 const mongoose = require('mongoose');
 
 const modelSchema = new mongoose.Schema({
   name: { type: String, required: true },
-
-  category: { 
-    type: String, 
-    enum: ['Premium', 'Basic', 'Top', 'Elite'],
-    required: true
-  },
-
-  height: { type: String },
-  measurements: { type: String },
-
-  images: {
-    type: [String],
-    default: []
-  },
-
-  bookingInfo: {
-    type: String,
-    default: "Contact via WhatsApp for rates."
-  }
-
+  category: { type: String, enum: ['basic', 'top', 'premium', 'elite'], required: true },
+  about: String,
+  height: String,
+  size: String,
+  bust: String,
+  waist: String,
+  hips: String,
+  shoe: String,
+  hair: String,
+  eyes: String,
+  images: [String], 
 }, { timestamps: true });
 
-module.exports = mongoose.model('Model', modelSchema);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// The "||" check prevents the OverwriteModelError if nodemon restarts
+module.exports = mongoose.models.Model || mongoose.model("Model", modelSchema);

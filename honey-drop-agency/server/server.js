@@ -409,36 +409,200 @@
 
 // export default AddModel;
 
+
+// const express = require('express');
+// const dotenv = require('dotenv');
+// const cors = require('cors');
+// const mongoose = require('mongoose');
+// const connectDB = require('./config/db');
+// const multer = require("multer");
+// const cloudinary = require("cloudinary").v2;
+// const { CloudinaryStorage } = require("multer-storage-cloudinary");
+
+// // 1. Load configurations
+// dotenv.config();
+// connectDB();
+
+// // 2. Initialize the app (Moved this up to prevent the "app is not defined" error)
+// const app = express();
+
+// // 3. Import specific route files
+// const authRoutes = require('./routes/authRoutes');
+// const bookingRoutes = require('./routes/bookingRoutes');
+// const applicationRoutes = require('./routes/applicationRoutes');
+// const modelRoutes = require('./routes/modelRoutes');
+
+// // --- CLOUDINARY CONFIG ---
+// cloudinary.config({
+//   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+//   api_key: process.env.CLOUDINARY_API_KEY,
+//   api_secret: process.env.CLOUDINARY_API_SECRET,
+// });
+
+// const storage = new CloudinaryStorage({
+//   cloudinary: cloudinary,
+//   params: {
+//     folder: "models",
+//     allowed_formats: ["jpg", "png", "jpeg"],
+//   },
+// });
+// const upload = multer({ storage: storage });
+
+// // --- MIDDLEWARE ---
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: false }));
+
+// // --- CORS ---
+// const allowedOrigins = [
+//   "http://localhost:5173", "http://localhost:5174",
+//   "https://honeydropempire.xyz", "https://www.honeydropempire.xyz",
+//   "https://hd-main-4.onrender.com", "https://hd-main-3.onrender.com"
+// ];
+
+// app.use(cors({
+//   origin: function (origin, callback) {
+//     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error('Not allowed by CORS'));
+//     }
+//   },
+//   credentials: true
+// }));
+
+// // --- MODEL SCHEMA ---
+// const modelSchema = new mongoose.Schema({
+//   name: String,
+//   category: { type: String, enum: ['basic', 'top', 'premium', 'elite'] },
+//   about: String,
+//   height: String,
+//   size: String,
+//   bust: String,
+//   waist: String,
+//   hips: String,
+//   shoe: String,
+//   hair: String,
+//   eyes: String,
+//   images: [String], 
+// }, { timestamps: true });
+
+// const Model = mongoose.model("Model", modelSchema);
+
+// // --- ROUTES ---
+
+// // Using imported route files
+// app.use('/api/auth', authRoutes);
+// app.use('/api/bookings', bookingRoutes); 
+// app.use('/api/application', applicationRoutes);
+// // app.use('/api/models', modelRoutes); // This uses your separate route file if it exists
+
+// // 1. ADD NEW MODEL (POST)
+// app.post("/api/models", upload.array("images", 4), async (req, res) => {
+//   try {
+//     const imageUrls = req.files ? req.files.map(file => file.path) : (req.body.images || []);
+    
+//     const newModel = new Model({
+//       ...req.body,
+//       images: imageUrls
+//     });
+
+//     await newModel.save();
+//     res.status(201).json({ success: true, model: newModel });
+//   } catch (error) {
+//     console.error("Upload Error:", error);
+//     res.status(500).json({ message: "Internal Server Error during upload" });
+//   }
+// });
+
+// // 2. GET MODELS BY CATEGORY
+// app.get("/api/models/category/:cat", async (req, res) => {
+//   try {
+//     const models = await Model.find({ category: req.params.cat });
+//     res.json(models);
+//   } catch (error) {
+//     res.status(500).json({ message: "Error fetching models" });
+//   }
+// });
+
+// // 3. GET ALL MODELS (For Admin Dashboard)
+// app.get("/api/models", async (req, res) => {
+//   try {
+//     const models = await Model.find().sort({ createdAt: -1 });
+//     res.json(models);
+//   } catch (error) {
+//     res.status(500).json({ message: "Error fetching models" });
+//   }
+// });
+
+// // 4. GET A SINGLE MODEL BY ID
+// app.get("/api/models/:id", async (req, res) => {
+//   try {
+//     const model = await Model.findById(req.params.id);
+//     if (!model) return res.status(404).json({ message: "Model not found" });
+//     res.json(model);
+//   } catch (error) {
+//     console.error("Fetch Single Model Error:", error);
+//     res.status(500).json({ message: "Invalid ID format or Server Error" });
+//   }
+// });
+
+// // 5. EDIT/UPDATE A MODEL (PUT)
+// app.put("/api/models/:id", upload.array("images", 4), async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const updateData = { ...req.body };
+
+//     if (req.files && req.files.length > 0) {
+//       updateData.images = req.files.map(file => file.path);
+//     }
+
+//     const updatedModel = await Model.findByIdAndUpdate(id, updateData, { new: true });
+    
+//     if (!updatedModel) {
+//       return res.status(404).json({ message: "Model not found in database" });
+//     }
+    
+//     res.json({ success: true, model: updatedModel });
+//   } catch (error) {
+//     console.error("Update Error:", error);
+//     res.status(500).json({ message: "Server error: Could not update model" });
+//   }
+// });
+
+// // 6. DELETE MODEL
+// app.delete("/api/models/:id", async (req, res) => {
+//   try {
+//     await Model.findByIdAndDelete(req.params.id);
+//     res.json({ message: "Model deleted" });
+//   } catch (error) {
+//     res.status(500).json({ message: "Error deleting model" });
+//   }
+// });
+
+// // Health Check
+// app.get('/', (req, res) => res.send('Honey Drop Backend is Live!'));
+
+// const PORT = process.env.PORT || 5001; 
+// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const mongoose = require('mongoose');
 const connectDB = require('./config/db');
-const multer = require("multer");
-const cloudinary = require("cloudinary").v2;
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
+// 1. Load configurations
 dotenv.config();
 connectDB();
 
 const app = express();
 
-// --- CLOUDINARY CONFIG ---
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+// 2. Import specific route files
+const authRoutes = require('./routes/authRoutes');
+const bookingRoutes = require('./routes/bookingRoutes');
+const applicationRoutes = require('./routes/applicationRoutes');
+const modelRoutes = require('./routes/modelRoutes'); // We will put the model logic here
 
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: "models",
-    allowed_formats: ["jpg", "png", "jpeg"],
-  },
-});
-const upload = multer({ storage: storage });
-
+// --- MIDDLEWARE ---
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -460,118 +624,13 @@ app.use(cors({
   credentials: true
 }));
 
-// --- MODEL SCHEMA ---
-const modelSchema = new mongoose.Schema({
-  name: String,
-  category: { type: String, enum: ['basic', 'top', 'premium', 'elite'] },
-  about: String,
-  height: String,
-  size: String,
-  bust: String,
-  waist: String,
-  hips: String,
-  shoe: String,
-  hair: String,
-  eyes: String,
-  images: [String], 
-}, { timestamps: true });
-
-const Model = mongoose.model("Model", modelSchema);
-
 // --- ROUTES ---
-const authRoutes = require('./routes/authRoutes');
-const bookingRoutes = require('./routes/bookingRoutes');
-const applicationRoutes = require('./routes/applicationRoutes');
-
 app.use('/api/auth', authRoutes);
 app.use('/api/bookings', bookingRoutes); 
 app.use('/api/application', applicationRoutes);
+app.use('/api/models', modelRoutes); // This now handles all /api/models/... routes
 
-// 1. ADD NEW MODEL (POST)
-app.post("/api/models", upload.array("images", 4), async (req, res) => {
-  try {
-    // If no files are uploaded, we check if they are being sent as text (for syncing)
-    const imageUrls = req.files ? req.files.map(file => file.path) : (req.body.images || []);
-    
-    const newModel = new Model({
-      ...req.body,
-      images: imageUrls
-    });
-
-    await newModel.save();
-    res.status(201).json({ success: true, model: newModel });
-  } catch (error) {
-    console.error("Upload Error:", error);
-    res.status(500).json({ message: "Internal Server Error during upload" });
-  }
-});
-
-// 2. GET MODELS BY CATEGORY
-app.get("/api/models/category/:cat", async (req, res) => {
-  try {
-    const models = await Model.find({ category: req.params.cat });
-    res.json(models);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching models" });
-  }
-});
-
-// 3. GET ALL MODELS (For Admin Dashboard)
-app.get("/api/models", async (req, res) => {
-  try {
-    const models = await Model.find().sort({ createdAt: -1 });
-    res.json(models);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching models" });
-  }
-});
-
-// 4. GET A SINGLE MODEL BY ID (FIXES THE 404 ERROR)
-app.get("/api/models/:id", async (req, res) => {
-  try {
-    const model = await Model.findById(req.params.id);
-    if (!model) return res.status(404).json({ message: "Model not found" });
-    res.json(model);
-  } catch (error) {
-    console.error("Fetch Single Model Error:", error);
-    res.status(500).json({ message: "Invalid ID format or Server Error" });
-  }
-});
-
-// 5. EDIT/UPDATE A MODEL (PUT)
-app.put("/api/models/:id", upload.array("images", 4), async (req, res) => {
-  try {
-    const { id } = req.params;
-    const updateData = { ...req.body };
-
-    // If new images are uploaded, replace the old ones
-    if (req.files && req.files.length > 0) {
-      updateData.images = req.files.map(file => file.path);
-    }
-
-    const updatedModel = await Model.findByIdAndUpdate(id, updateData, { new: true });
-    
-    if (!updatedModel) {
-      return res.status(404).json({ message: "Model not found in database" });
-    }
-    
-    res.json({ success: true, model: updatedModel });
-  } catch (error) {
-    console.error("Update Error:", error);
-    res.status(500).json({ message: "Server error: Could not update model" });
-  }
-});
-
-// 6. DELETE MODEL
-app.delete("/api/models/:id", async (req, res) => {
-  try {
-    await Model.findByIdAndDelete(req.params.id);
-    res.json({ message: "Model deleted" });
-  } catch (error) {
-    res.status(500).json({ message: "Error deleting model" });
-  }
-});
-
+// Health Check
 app.get('/', (req, res) => res.send('Honey Drop Backend is Live!'));
 
 const PORT = process.env.PORT || 5001; 
